@@ -1,6 +1,6 @@
- require_relative './../../spec_helper'
+ require_relative './../spec_helper'
 
-describe Alphavantage::Indicator do
+ RSpec.describe Alphavantage::Indicator do
   context "#new" do
     it "create a new indicator without stock" do
       indicator = Alphavantage::Indicator.new function: "SMA", symbol: "MSFT", key: @config["key"], verbose: false

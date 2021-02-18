@@ -1,4 +1,4 @@
-require_relative './../../spec_helper'
+require_relative './../../helper'
 
 describe Alphavantage::Stock do
   context "#new" do
@@ -22,7 +22,7 @@ describe Alphavantage::Stock do
         bool << "error"
       end
       stock.datatype = "csv"
-      bool <<stock.datatype
+      bool << stock.datatype
       stock.datatype = "json"
       expect(bool).to eq ["json", "error", "csv"]
     end

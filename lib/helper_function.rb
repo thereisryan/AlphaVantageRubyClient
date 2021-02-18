@@ -13,7 +13,7 @@ module HelperFunctions
 
   def check_datatype(datatype, file)
     if datatype == "csv" && file.nil?
-      raise Alphavantage::Error.new message: "No file specified where to save the CSV ata"
+      raise Alphavantage::Error.new message: "No file specified where to save the CSV data"
     elsif datatype != "csv" && !file.nil?
       raise Alphavantage::Error.new message: "Hash error: No file necessary"
     end

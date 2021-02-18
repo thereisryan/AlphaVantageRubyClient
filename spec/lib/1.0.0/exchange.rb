@@ -1,5 +1,5 @@
-require_relative './../../spec_helper'
-
+# require_relative './../../helper'
+require 'alphavantagerb/'
 describe Alphavantage::Exchange do
   context "#new" do
     it "create a new exchange without client" do
