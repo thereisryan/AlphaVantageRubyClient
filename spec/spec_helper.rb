@@ -15,7 +15,7 @@ end
 RSpec.configure do |config|
 	config.color = true
 	config.before(:all) do
-		# @config = YAML::load_file(File.join(__dir__, 'config.yml'))
+		@config = YAML::load_file(File.join(__dir__, 'config.yml'))
 		@client = Alphavantage::Client.new key: @config["key"]
 		@stock = @client.stock(symbol: "MSFT")
 	end

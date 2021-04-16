@@ -1,4 +1,5 @@
 require_relative "lib/1.0.0/client"
+require_relative "lib/1.0.0/earnings_spec"
 require_relative "lib/1.0.0/crypto_timeseries"
 require_relative "lib/1.0.0/crypto"
 require_relative "lib/1.0.0/exchange"

@@ -1,4 +1,4 @@
-require_relative './../../helper'
+require_relative './../../spec_helper'
 
 describe Alphavantage::Client do
   context "#new" do

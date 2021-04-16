@@ -86,5 +86,9 @@ module Alphavantage
     def sector
       Alphavantage::Sector.new key: self
     end
+
+    def earnings(symbol:, datatype: "json")
+      Alphavantage::Earnings.new symbol: symbol, key: self, datatype: datatype
+    end
   end
 end
