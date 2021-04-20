@@ -1,3 +1,5 @@
+require 'csv'
+
 module Alphavantage
   class Client
     include HelperFunctions
@@ -22,22 +24,34 @@ module Alphavantage
       begin
         response = HTTParty.get(send_url)
       rescue StandardError => e
-        raise Alphavantage::Error.new message: "Failed request: #{e.message}"
+        raise Alphavantage::Error.new(message: "Failed request: #{e.message}")
       end
       data = response.body
       begin
         puts data if @verbose
-        data = JSON.parse(data)
+
+        begin
+          data = JSON.parse(data)
+        rescue JSON::ParserError => e
+          puts 'Failed to parse response JSON. Attempting CSV parsing.' if @verbose
+          csv_data = CSV.parse(data)
+          data = {
+            headers: csv_data.first,
+            items: csv_data[1...-1]
+          }
+        end
       rescue StandardError => e
-        raise Alphavantage::Error.new message: "Parsing failed",
-          data: data
+        raise Alphavantage::Error.new(message: "Parsing failed", data: data)
       end
 
-      error = data["Error Message"] || data["Information"] || data["Note"]
-      unless error.nil?
-        raise Alphavantage::Error.new message: error, data: data
+      error = nil
+      if data.is_a?(Hash)
+        error = data["Error Message"] || data["Information"] || data["Note"]
       end
-      return data
+
+      raise Alphavantage::Error.new(message: error, data: data) if error
+
+      data
     end
 
     def download(url, file)
@@ -71,24 +85,33 @@ module Alphavantage
       return output
     end
 
-    def stock(symbol:, datatype: "json")
-      Alphavantage::Stock.new symbol: symbol, key: self, datatype: datatype
-    end
-
-    def exchange(from:, to:, datatype: "json")
-      Alphavantage::Exchange.new from: from, to: to, key: self, datatype: datatype
-    end
-
     def crypto(symbol:, market:, datatype: "json")
-      Alphavantage::Crypto.new symbol: symbol, key: self, datatype: datatype, market: market
-    end
-
-    def sector
-      Alphavantage::Sector.new key: self
+      Alphavantage::Crypto.new(
+        symbol: symbol,
+        key: self,
+        datatype: datatype,
+        market: market
+      )
     end
 
     def earnings(symbol:, datatype: "json")
-      Alphavantage::Earnings.new symbol: symbol, key: self, datatype: datatype
+      Alphavantage::Earnings.new(symbol: symbol, key: self, datatype: datatype)
+    end
+
+    def earnings_calendar
+      Alphavantage::EarningsCalendar.new(key: self)
+    end
+
+    def exchange(from:, to:, datatype: "json")
+      Alphavantage::Exchange.new(from: from, to: to, key: self, datatype: datatype)
+    end
+
+    def sector
+      Alphavantage::Sector.new(key: self)
+    end
+
+    def stock(symbol:, datatype: "json")
+      Alphavantage::Stock.new(symbol: symbol, key: self, datatype: datatype)
     end
   end
 end

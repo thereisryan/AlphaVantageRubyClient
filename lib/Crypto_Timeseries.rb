@@ -2,8 +2,12 @@ module Alphavantage
   class Crypto_Timeseries
     include HelperFunctions
 
-    def initialize type: "daily", market:, symbol:, datatype: "json", file: nil,
-      key:, verbose: false
+    def initialize(type: "daily",
+                   market:, symbol:,
+                   datatype: "json",
+                   file: nil,
+                   key:,
+                   verbose: false)
       check_argument([true, false], verbose, "verbose")
       @client = return_client(key, verbose)
       check_argument(["json", "csv"], datatype, "datatype")

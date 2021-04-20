@@ -22,12 +22,14 @@ module HelperFunctions
   def open_struct(url, type)
     output = OpenStruct.new
     output.output = @client.request(url)
+
     global_quote = output.output.dig(type) || {}
     global_quote.each do |key, val|
       key_sym = recreate_metadata_key(key)
       output[key_sym] = val
     end
-    return output
+
+    output
   end
 
   def return_matype(val, val_string)
